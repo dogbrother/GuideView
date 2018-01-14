@@ -24,7 +24,13 @@ public class Guide implements GuideLayout.OnRemoveListener{
     }
 
     public void show(){
-        ((FrameLayout)mActivity.getWindow().getDecorView()).addView(mGuideLayouts.get(mIndex++),FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
+        View root = mActivity.getWindow().getDecorView().findViewById(android.R.id.content);
+        root.post(new Runnable() {
+            @Override
+            public void run() {
+                ((FrameLayout)mActivity.getWindow().getDecorView()).addView(mGuideLayouts.get(mIndex++),FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
+            }
+        });
     }
 
     @Override

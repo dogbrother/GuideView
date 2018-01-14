@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by 84412 on 2018/1/2.
@@ -39,6 +40,9 @@ public class GuideView {
 
     public GuideView(View view){
         this.mView = view;
+        if(mView.getParent() != null){
+            ((ViewGroup)mView.getParent()).removeView(mView);
+        }
     }
 
     public GuideView setXPosition(int x){
@@ -163,15 +167,6 @@ public class GuideView {
         mYPosition+=mYInterval;
     }
 
-    private static Bitmap convertViewToBitmap(View view){
-        Bitmap bitmap = Bitmap.createBitmap(200, 50, Bitmap.Config.ARGB_8888);
-        view.draw(new Canvas(bitmap));
-        return bitmap;
-    }
-
-    public Bitmap getBitmap(){
-        return convertViewToBitmap(mView);
-    }
 
     public RectF getRectF(){
         RectF rectF = new RectF();
