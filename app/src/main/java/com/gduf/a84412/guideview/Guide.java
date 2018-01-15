@@ -1,43 +1,54 @@
 package com.gduf.a84412.guideview;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by 84412 on 2018/1/7.
  */
 
-public class Guide implements GuideLayout.OnRemoveListener{
+public class Guide implements GuideLayout.OnResetListener{
 
     private Activity mActivity;
-    private List<GuideLayout> mGuideLayouts;
+    private GuideLayout mGuideLayout;
+    private Queue<GuidePage> mGuidePages;
     private int mIndex = 0;
 
-    private Guide(){
-        mGuideLayouts = new ArrayList<>();
+    private Guide(Activity activity){
+        mGuideLayout = new GuideLayout(activity);
+        mActivity = activity;
+        mGuidePages = new ArrayDeque<>();
     }
 
     public void show(){
+        mGuideLayout.setGuidePage(mGuidePages.remove());
         View root = mActivity.getWindow().getDecorView().findViewById(android.R.id.content);
         root.post(new Runnable() {
             @Override
             public void run() {
-                ((FrameLayout)mActivity.getWindow().getDecorView()).addView(mGuideLayouts.get(mIndex++),FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
+                ((FrameLayout)mActivity.getWindow().getDecorView()).addView(mGuideLayout,FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
             }
         });
     }
 
     @Override
-    public void onRemove() {
-        if(mIndex <= mGuideLayouts.size() - 1){
-            ((FrameLayout)mActivity.getWindow().getDecorView()).addView(mGuideLayouts.get(mIndex++),FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
+    public void onReset() {
+        if(!mGuidePages.isEmpty()){
+            mGuideLayout.reset();
+            mGuideLayout.setGuidePage(mGuidePages.remove());
+        }else{
+            ((FrameLayout)mActivity.getWindow().getDecorView()).removeView(mGuideLayout);
         }
+
     }
 
     public static final class Builder{
@@ -45,8 +56,9 @@ public class Guide implements GuideLayout.OnRemoveListener{
         private GuidePage mCurrentPage;
         private Guide mGuide;
 
+
         public Builder(Activity activity){
-            mGuide = new Guide();
+            mGuide = new Guide(activity);
             mGuide.mActivity = activity;
             mCurrentPage = new GuidePage();
         }
@@ -87,20 +99,18 @@ public class Guide implements GuideLayout.OnRemoveListener{
         }
 
         public Builder asPage(){
-            addGuideLayout();
+            addGuidePage();
             return this;
         }
 
-        private void addGuideLayout(){
-            GuideLayout layout = new GuideLayout(mGuide.mActivity);
-            layout.setGuidePage(mCurrentPage);
-            layout.setOnRemoveListener(mGuide);
+        private void addGuidePage(){
+            mGuide.mGuidePages.add(mCurrentPage);
             mCurrentPage = new GuidePage();
-            mGuide.mGuideLayouts.add(layout);
         }
 
         public Guide build(){
-            addGuideLayout();
+            addGuidePage();
+            mGuide.mGuideLayout.setOnResetListener(mGuide);
             return mGuide;
         }
     }

@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import java.util.List;
@@ -28,15 +27,16 @@ public class GuideLayout extends RelativeLayout {
     private GuidePage mGuidePage;
     private Canvas mCanvas;
     private Bitmap mBitmap;
+    private boolean mIsAttachToWindow = false;
 
-    public interface OnRemoveListener{
-        void onRemove();
+    public interface OnResetListener{
+        void onReset();
     }
 
-    private OnRemoveListener mRemoveListener;
+    private OnResetListener mOnResetListener;
 
-    public void setOnRemoveListener(OnRemoveListener listener){
-        this.mRemoveListener = listener;
+    public void setOnResetListener(OnResetListener listener){
+        this.mOnResetListener = listener;
     }
 
     public GuideLayout(Context context) {
@@ -75,19 +75,34 @@ public class GuideLayout extends RelativeLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.e("blackdog", "onDraw: " );
         canvas.drawBitmap(mBitmap,0,0,null);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        mIsAttachToWindow = true;
         drawHight();
+    }
+
+    public void reset(){
+        mBitmap.recycle();
+        mBitmap = Bitmap.createBitmap(ScreenUtils.getScreenWidth(getContext()),ScreenUtils.getScreenHeight(getContext()), Bitmap.Config.ARGB_8888);
+        mCanvas.setBitmap(mBitmap);
+        mCanvas.drawColor(mBgColor);
+        final List<GuideView> guideViews = mGuidePage.getGuideViews();
+        for (GuideView guideView : guideViews) {
+            removeView(guideView.getView());
+        }
+        invalidate();
     }
 
     public void setGuidePage(GuidePage guidePage){
         this.mGuidePage =  guidePage;
         addViews();
+        if(mIsAttachToWindow) {
+            drawHight();
+        }
     }
 
     private void addViews(){
@@ -138,7 +153,9 @@ public class GuideLayout extends RelativeLayout {
         if(event.getAction() == MotionEvent.ACTION_DOWN
                 && mGuidePage.isOutsideCancelable()
                 && checkOutSide(event)){
-            ((FrameLayout)getParent()).removeView(this);
+            if(mOnResetListener != null){
+                mOnResetListener.onReset();
+            }
         }
         return super.onTouchEvent(event);
     }
@@ -165,8 +182,6 @@ public class GuideLayout extends RelativeLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(mRemoveListener != null){
-            mRemoveListener.onRemove();
-        }
+        mIsAttachToWindow = true;
     }
 }
