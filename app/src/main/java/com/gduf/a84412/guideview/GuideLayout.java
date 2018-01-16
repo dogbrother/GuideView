@@ -106,10 +106,11 @@ public class GuideLayout extends RelativeLayout {
         }
     }
 
-    private void addViews(){
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
         final List<GuideView> guideViews = mGuidePage.getGuideViews();
         for (GuideView guideView : guideViews) {
-            addView(guideView.getView());
             RectF rectF = guideView.getRectF();
             int offset = mGuidePage.getOffset();
             rectF.top = rectF.top + offset;
@@ -117,6 +118,14 @@ public class GuideLayout extends RelativeLayout {
             LayoutParams params = (LayoutParams) guideView.getView().getLayoutParams();
             params.leftMargin = (int) rectF.left;
             params.topMargin = (int) rectF.top;
+            guideView.getView().setLayoutParams(params);
+        }
+    }
+
+    private void addViews(){
+        final List<GuideView> guideViews = mGuidePage.getGuideViews();
+        for (GuideView guideView : guideViews) {
+            addView(guideView.getView());
         }
     }
 

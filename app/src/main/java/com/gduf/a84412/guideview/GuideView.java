@@ -123,47 +123,46 @@ public class GuideView {
         switch (mRelative){
             //Left
             case RELATIVE_LEFT:
-                mXPosition = location[0] - viewWidth;
-                mYPosition = location[1];
+                mXPosition = location[0] - viewWidth - mXInterval;
+                mYPosition = location[1] - mYInterval;
                 break;
             //Right
             case RELATIVE_RIGHT:
-                mXPosition = location[0] + relativeWidth;
-                mYPosition = location[1];
+                mXPosition = location[0] + relativeWidth + mXInterval;
+                mYPosition = location[1] - mYInterval;
                 break;
             //Top
             case RELATIVE_TOP:
-                mXPosition = location[0];
-                mYPosition = location[1] - viewHeight;
+                mXPosition = location[0] - mXInterval;
+                mYPosition = location[1] - viewHeight  - mYInterval;
                 break;
             //Bottom
             case RELATIVE_BOTTOM:
-                mXPosition = location[0];
-                mYPosition = location[1] + relativeHeight;
+                mXPosition = location[0] - mXInterval;
+                mYPosition = location[1] + relativeHeight + mYInterval;
                 break;
             //Left + Top
             case RELATIVE_LEFT + RELATIVE_TOP:
-                mXPosition = location[0] - viewWidth;
-                mYPosition = location[1] - viewHeight;
+                mXPosition = location[0] - viewWidth - mXInterval;
+                mYPosition = location[1] - viewHeight - mYInterval;
                 break;
             //Right + Top
             case RELATIVE_RIGHT + RELATIVE_TOP:
-                mXPosition = location[0] + relativeWidth;
-                mYPosition = location[1] - viewHeight;
+                mXPosition = location[0] + relativeWidth+ mXInterval;
+                mYPosition = location[1] - viewHeight - mYInterval;
                 break;
             //Left + Bottom
             case RELATIVE_LEFT + RELATIVE_BOTTOM:
-                mXPosition = location[0] - viewWidth;
-                mYPosition = location[1] + relativeHeight;
+                mXPosition = location[0] - viewWidth - mXInterval;
+                mYPosition = location[1] + relativeHeight + mYInterval;
                 break;
             //Right + Bottom
             case RELATIVE_RIGHT + RELATIVE_BOTTOM:
-                mXPosition = location[0] + relativeWidth;
-                mYPosition = location[1] + relativeHeight;
+                mXPosition = location[0] + relativeWidth+ mXInterval;
+                mYPosition = location[1] + relativeHeight + mYInterval;
                 break;
         }
-        mXPosition+=mXInterval;
-        mYPosition+=mYInterval;
+
     }
 
 
