@@ -82,6 +82,7 @@ public class GuideLayout extends RelativeLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mIsAttachToWindow = true;
+        addViews();
         drawHight();
     }
 
@@ -99,8 +100,8 @@ public class GuideLayout extends RelativeLayout {
 
     public void setGuidePage(GuidePage guidePage){
         this.mGuidePage =  guidePage;
-        addViews();
         if(mIsAttachToWindow) {
+            addViews();
             drawHight();
         }
     }

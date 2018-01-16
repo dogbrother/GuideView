@@ -26,14 +26,17 @@ public class MainActivity extends AppCompatActivity {
         highLight2.setPadding(50);
         View view = LayoutInflater.from(this).inflate(R.layout.item_test, null,false);
         GuideView guideView = new GuideView(view);
-        guideView.setXPosition(200);
-        guideView.setYPosition(300);
+        guideView.setRelativeView(mTextView);
+        guideView.setRelative(GuideView.RELATIVE_TOP);
+//        guideView.setXPosition(200);
+//        guideView.setYPosition(300);
         Guide guide = new Guide.Builder(this)
                 .addHightLight(highLight)
                 .setOutsideCancelable(true)
                 .addGuideView(guideView)
                 .asPage()
                 .addHightLight(highLight2)
+                .addGuideView(guideView)
                 .setOutsideCancelable(true)
                 .build();
         guide.show();

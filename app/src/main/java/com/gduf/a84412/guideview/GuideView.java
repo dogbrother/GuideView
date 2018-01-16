@@ -75,7 +75,6 @@ public class GuideView {
     public GuideView setXInterval(int XInterval) {
         mXInterval = XInterval;
         return this;
-
     }
 
     public int getYInterval() {
@@ -169,6 +168,7 @@ public class GuideView {
 
 
     public RectF getRectF(){
+        caculatePosition();
         RectF rectF = new RectF();
         rectF.top = mYPosition;
         rectF.left = mXPosition;

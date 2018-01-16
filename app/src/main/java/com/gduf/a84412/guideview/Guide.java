@@ -21,7 +21,6 @@ public class Guide implements GuideLayout.OnResetListener{
     private Activity mActivity;
     private GuideLayout mGuideLayout;
     private Queue<GuidePage> mGuidePages;
-    private int mIndex = 0;
 
     private Guide(Activity activity){
         mGuideLayout = new GuideLayout(activity);
@@ -48,14 +47,12 @@ public class Guide implements GuideLayout.OnResetListener{
         }else{
             ((FrameLayout)mActivity.getWindow().getDecorView()).removeView(mGuideLayout);
         }
-
     }
 
     public static final class Builder{
 
         private GuidePage mCurrentPage;
         private Guide mGuide;
-
 
         public Builder(Activity activity){
             mGuide = new Guide(activity);
