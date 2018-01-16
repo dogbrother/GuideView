@@ -27,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
         View view = LayoutInflater.from(this).inflate(R.layout.item_test, null,false);
         GuideView guideView = new GuideView(view);
         guideView.setRelativeView(mTextView);
-        guideView.setYInterval(12);
+        guideView.setYInterval(100);
         GuideView guideView1 = new GuideView(view);
         guideView1.setRelativeView(mTextView);
-        guideView1.setYInterval(12);
-        guideView.setRelative(GuideView.RELATIVE_TOP);
+        guideView1.setYInterval(100);
+        guideView.setRelative(GuideView.RELATIVE_BOTTOM | GuideView.RELATIVE_RIGHT);
         guideView1.setRelative(GuideView.RELATIVE_TOP);
         Guide guide = new Guide.Builder(this)
                 .addHightLight(highLight)

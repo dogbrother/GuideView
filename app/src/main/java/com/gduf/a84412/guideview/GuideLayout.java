@@ -28,6 +28,7 @@ public class GuideLayout extends RelativeLayout {
     private Canvas mCanvas;
     private Bitmap mBitmap;
     private boolean mIsAttachToWindow = false;
+    private boolean mNeedLayoutView = false;
 
     public interface OnResetListener{
         void onReset();
@@ -109,6 +110,8 @@ public class GuideLayout extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+        if(mNeedLayoutView){
+            mNeedLayoutView = false;
         final List<GuideView> guideViews = mGuidePage.getGuideViews();
         for (GuideView guideView : guideViews) {
             RectF rectF = guideView.getRectF();
@@ -120,13 +123,17 @@ public class GuideLayout extends RelativeLayout {
             params.topMargin = (int) rectF.top;
             guideView.getView().setLayoutParams(params);
         }
+        }
     }
+
+
 
     private void addViews(){
         final List<GuideView> guideViews = mGuidePage.getGuideViews();
         for (GuideView guideView : guideViews) {
             addView(guideView.getView());
         }
+        mNeedLayoutView = true;
     }
 
     private void drawHight() {
