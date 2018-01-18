@@ -1,7 +1,5 @@
-package com.gduf.a84412.guideview;
+package com.blackdog.guide;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.View;
@@ -14,12 +12,18 @@ import android.view.ViewGroup;
 
 public class GuideView {
 
+    public interface OnGuideViewClickListener{
+        void onClick(Guide guide, View view);
+    }
+
+    private OnGuideViewClickListener mOnGuideViewClickListener;
     private static final int RELATVIE_MASK = 0xff;
     public static final int RELATIVE_LEFT = 1;
     public static final int RELATIVE_RIGHT = 1 << 1;
     public static final int RELATIVE_TOP = 1 << 2;
     public static final int RELATIVE_BOTTOM = 1 << 3;
 
+    private Guide mGuide;
     private int mXInterval;
     private int mYInterval;
     private View mView;
@@ -43,6 +47,30 @@ public class GuideView {
         if(mView.getParent() != null){
             ((ViewGroup)mView.getParent()).removeView(mView);
         }
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mOnGuideViewClickListener != null && mGuide != null){
+                    mOnGuideViewClickListener.onClick(mGuide,v);
+                }
+            }
+        });
+    }
+
+    public Guide getGuide() {
+        return mGuide;
+    }
+
+    public OnGuideViewClickListener getOnGuideViewClickListener() {
+        return mOnGuideViewClickListener;
+    }
+
+    public void setOnGuideViewClickListener(OnGuideViewClickListener onGuideViewClickListener) {
+        mOnGuideViewClickListener = onGuideViewClickListener;
+    }
+
+    public void setGuide(Guide guide) {
+        mGuide = guide;
     }
 
     public GuideView setXPosition(int x){
@@ -119,7 +147,7 @@ public class GuideView {
         final int relativeWidth = mRelativeView.getWidth();
         final int relativeHeight = mRelativeView.getHeight();
         final int[] location = new int[2];
-        mRelativeView.getLocationOnScreen(location);
+        mRelativeView.getLocationInWindow(location);
         switch (mRelative){
             //Left
             case RELATIVE_LEFT:

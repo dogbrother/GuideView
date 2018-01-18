@@ -8,6 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.blackdog.guide.Guide;
+import com.blackdog.guide.GuideView;
+import com.blackdog.guide.HighLight;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
         GuideView guideView = new GuideView(view);
         guideView.setRelativeView(mTextView);
         guideView.setYInterval(100);
+        guideView.setOnGuideViewClickListener(new GuideView.OnGuideViewClickListener() {
+            @Override
+            public void onClick(Guide guide, View view) {
+                guide.nextOrRemove();
+            }
+        });
         GuideView guideView1 = new GuideView(view);
         guideView1.setRelativeView(mTextView);
         guideView1.setYInterval(100);
@@ -35,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         guideView1.setRelative(GuideView.RELATIVE_TOP);
         Guide guide = new Guide.Builder(this)
                 .addHightLight(highLight)
-                .setOutsideCancelable(true)
                 .addGuideView(guideView)
                 .asPage()
                 .addHightLight(highLight2)

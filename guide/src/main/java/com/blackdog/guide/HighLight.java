@@ -1,4 +1,4 @@
-package com.gduf.a84412.guideview;
+package com.blackdog.guide;
 
 import android.graphics.RectF;
 import android.view.View;
@@ -43,7 +43,7 @@ public class HighLight {
         RectF rectF = new RectF();
         if (mHole != null) {
             int[] location = new int[2];
-            mHole.getLocationOnScreen(location);
+            mHole.getLocationInWindow(location);
             rectF.left = location[0] - mPaddingLeft;
             rectF.top = location[1] - mPaddingTop;
             rectF.right = location[0] + mHole.getWidth() + mPaddingRight;

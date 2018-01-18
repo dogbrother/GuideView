@@ -1,4 +1,4 @@
-package com.gduf.a84412.guideview;
+package com.blackdog.guide;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,8 +9,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import java.util.List;
@@ -30,14 +30,14 @@ public class GuideLayout extends RelativeLayout {
     private boolean mIsAttachToWindow = false;
     private boolean mNeedLayoutView = false;
 
-    public interface OnResetListener{
-        void onReset();
+    public interface OnRemoveListener {
+        void onRemove();
     }
 
-    private OnResetListener mOnResetListener;
+    private OnRemoveListener mOnRemoveListener;
 
-    public void setOnResetListener(OnResetListener listener){
-        this.mOnResetListener = listener;
+    public void setOnRemoveListener(OnRemoveListener listener){
+        this.mOnRemoveListener = listener;
     }
 
     public GuideLayout(Context context) {
@@ -84,7 +84,7 @@ public class GuideLayout extends RelativeLayout {
         super.onAttachedToWindow();
         mIsAttachToWindow = true;
         addViews();
-        drawHight();
+        drawHighLight();
     }
 
     public void reset(){
@@ -103,7 +103,7 @@ public class GuideLayout extends RelativeLayout {
         this.mGuidePage =  guidePage;
         if(mIsAttachToWindow) {
             addViews();
-            drawHight();
+            drawHighLight();
         }
     }
 
@@ -130,13 +130,21 @@ public class GuideLayout extends RelativeLayout {
 
     private void addViews(){
         final List<GuideView> guideViews = mGuidePage.getGuideViews();
-        for (GuideView guideView : guideViews) {
+        for (final GuideView guideView : guideViews) {
             addView(guideView.getView());
+            guideView.getView().setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(guideView.getOnGuideViewClickListener() != null){
+                        guideView.getOnGuideViewClickListener().onClick(guideView.getGuide(),v);
+                    }
+                }
+            });
         }
         mNeedLayoutView = true;
     }
 
-    private void drawHight() {
+    private void drawHighLight() {
         if (mGuidePage != null) {
             int offset = mGuidePage.getOffset();
             final List<HighLight> highLights = mGuidePage.getHighLights();
@@ -170,8 +178,8 @@ public class GuideLayout extends RelativeLayout {
         if(event.getAction() == MotionEvent.ACTION_DOWN
                 && mGuidePage.isOutsideCancelable()
                 && checkOutSide(event)){
-            if(mOnResetListener != null){
-                mOnResetListener.onReset();
+            if(mOnRemoveListener != null){
+                mOnRemoveListener.onRemove();
             }
         }
         return super.onTouchEvent(event);

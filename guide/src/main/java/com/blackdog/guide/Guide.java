@@ -1,14 +1,10 @@
-package com.gduf.a84412.guideview;
+package com.blackdog.guide;
 
 import android.app.Activity;
-import android.content.Context;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
@@ -16,7 +12,8 @@ import java.util.Queue;
  * Created by 84412 on 2018/1/7.
  */
 
-public class Guide implements GuideLayout.OnResetListener{
+public class Guide implements GuideLayout.OnRemoveListener {
+
 
     private Activity mActivity;
     private GuideLayout mGuideLayout;
@@ -39,14 +36,18 @@ public class Guide implements GuideLayout.OnResetListener{
         });
     }
 
-    @Override
-    public void onReset() {
+    public void nextOrRemove(){
         if(!mGuidePages.isEmpty()){
             mGuideLayout.reset();
             mGuideLayout.setGuidePage(mGuidePages.remove());
         }else{
             ((FrameLayout)mActivity.getWindow().getDecorView()).removeView(mGuideLayout);
         }
+    }
+
+    @Override
+    public void onRemove() {
+       nextOrRemove();
     }
 
     public static final class Builder{
@@ -61,11 +62,15 @@ public class Guide implements GuideLayout.OnResetListener{
         }
 
         public Builder addGuideView(GuideView guideView){
+            guideView.setGuide(mGuide);
             this.mCurrentPage.addGuideView(guideView);
             return this;
         }
 
         public Builder addGuideViews(List<GuideView> guideViews){
+            for(GuideView guideView : guideViews){
+                guideView.setGuide(mGuide);
+            }
             this.mCurrentPage.addGuideViews(guideViews);
             return this;
         }
@@ -107,7 +112,7 @@ public class Guide implements GuideLayout.OnResetListener{
 
         public Guide build(){
             addGuidePage();
-            mGuide.mGuideLayout.setOnResetListener(mGuide);
+            mGuide.mGuideLayout.setOnRemoveListener(mGuide);
             return mGuide;
         }
     }

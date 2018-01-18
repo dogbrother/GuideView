@@ -1,4 +1,4 @@
-package com.gduf.a84412.guideview;
+package com.blackdog.guide;
 import java.util.ArrayList;
 import java.util.List;
 
